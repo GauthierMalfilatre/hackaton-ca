@@ -1,0 +1,4 @@
+# Cache and editor folders
+__pycache__/
+.vscode/
+.idea/

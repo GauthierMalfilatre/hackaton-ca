@@ -6,15 +6,17 @@
 ##
 import Block
 
-def handle_char(char: str, cmap: list[Block.Block], x: int, y: int) -> None:
+def handle_char(char: str, cmap: list[Block.Block], x: int, y: int, images: dict) -> None:
     """ Handle char -> find the good Block """
+    # A ground should be anywhere ig
+    cmap.append(Block.Ground(x, y, images["parquet"]))
     match char:
-        case "#":
-            cmap.append(Block.Ground(x, y))
+        case "0":
+            cmap.append(Block.Ground(x, y, images["parquet"], 1))
         case _:
             pass
 
-def parse_map(filename: str) -> list:
+def parse_map(filename: str, images: dict) -> list:
     """ Parse the map """
     cmap : list[list[Block.Block]] = []
     lines: list[str]               = []
@@ -24,9 +26,9 @@ def parse_map(filename: str) -> list:
     for y, line in enumerate(lines):
         cmap.append([])
         for x, char in enumerate(line):
-            handle_char(char, cmap[-1], x, y)
+            handle_char(char, cmap[-1], x, y, images)
     return cmap
 
 if __name__ == "__main__":
     print("This module shouldn't be run as if, exiting.")
-    exit(0)
+    exit(84)

@@ -2,17 +2,19 @@
 ## HACKATON PROJECT, 2026
 ## GAME_CA
 ## File description:
-## Game made for hackaton-ca
+## Block class'
 ##
 import pygame
 
 class Block:
-    def __init__(self, x: int, y: int, color: str = "#000000") -> "Block":
+    def __init__(self, x: int, y: int, sprite, color: str = "#000000", z: int = 0) -> "Block":
         """ Initialisation of class Block """
         self.__isDirty : bool            = True
-        self.__size    : tuple[int, int] = (100, 100)
+        self.__size    : tuple[int, int] = (50, 50)
         self.__position: tuple[int, int] = (x * self.__size[0], y * self.__size[1])
         self.__color   : tuple[int]      = color
+        self.__z       : int             = z
+        self.__sprite                    = sprite
 
     def getSize(self) -> tuple[int, int]:
         """ Get the size of the Block """
@@ -22,19 +24,33 @@ class Block:
         """ Get the position of the Block """
         return self.__position
 
+    def getColor(self) -> str:
+        """ Return the color of the Block """
+        return self.__color
+
+    def setColor(self, color: str) -> "Block":
+        """ Set the color of the block """
+        self.__color = color
+        return self
+
+    def markAsDirty(self) -> "Block":
+        """ Mark the Block as dirty """
+        self.__isDirty = True
+        return self
+
     def render(self, screen) -> "Block":
         """ Render method for class block """
         if (not self.__isDirty):
-            return
-        print(self.__color)
-        pygame.draw.rect(screen, self.__color, (*self.__position, *self.__size))
+            pass
+        pygame.draw.rect(screen, self.__color, (self.__position[0], self.__position[1] + (self.__z * self.__size[1] / 2), *self.__size), 1)
+        screen.blit(self.__sprite, (self.__position[0], self.__position[1] - (self.__z * self.__size[1] / 2)))
         self.__isDirty = False
 
 class Ground(Block):
-    def __init__(self, x, y) -> "Ground":
+    def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Ground":
         """ Initialisation of class Ground """
-        super().__init__(x, y, "#6F4E37")
+        super().__init__(x, y, sprite, "#6F4E37", z)
 
 if __name__ == "__main__":
     print("This module shouldn't be run as if, exiting.")
-    exit(0)
+    exit(84)
