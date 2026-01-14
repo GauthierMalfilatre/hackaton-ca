@@ -1,6 +1,6 @@
 ##
 ## HACKATON PROJECT, 2026
-## GAME_CA
+## CAVA
 ## File description:
 ## Block class'
 ##
@@ -20,6 +20,11 @@ class Block:
     def __str__(self) -> str:
         """ Get the name of the block """
         return self.__name
+
+    def rumble(self) -> "Block":
+        """ Rumble the block """
+        self.__z -= 0.1
+        return self
 
     def setName(self, newname: str) -> "Block":
         """ Set the name of the block """
@@ -59,6 +64,7 @@ class Block:
         pygame.draw.rect(screen, self.__color, (self.__position[0], self.__position[1] + (self.__z * self.__size[1] / 2), *self.__size), 1)
         screen.blit(self.__sprite, (self.__position[0], self.__position[1] - (self.__z * self.__size[1] / 2)))
         self.__isDirty = False
+        self.__z = int(self.__z)
 
 class Ground(Block):
     def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Ground":

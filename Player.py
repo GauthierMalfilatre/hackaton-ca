@@ -1,6 +1,6 @@
 ##
 ## HACKATON PROJECT, 2026
-## GAME_CA
+## CAVA
 ## File description:
 ## Block class'
 ##
@@ -29,15 +29,14 @@ class Player:
 
     def __handleCollision(self, MAP: list, target_pos: list[float, float]) -> "Player":
         """ Handle collision for player """
+        
         for i in ((target_pos[0] + 32, target_pos[1] + 32), (target_pos[0] + 96, target_pos[1] + 32),
                   (target_pos[0] + 32, target_pos[1] + 96), (target_pos[0] + 96, target_pos[1] + 96),
                   (target_pos[0] + 64, target_pos[1] + 32), (target_pos[0] + 32, target_pos[1] + 64),
-                  (target_pos[0] + 64, target_pos[1] + 96), (target_pos[0] + 96, target_pos[1] + 64)
-                  ):
+                  (target_pos[0] + 64, target_pos[1] + 96), (target_pos[0] + 96, target_pos[1] + 64)):
             current_case = (int((i[0]) // 50), int((i[1]) // 50))
             current_block = MAP[current_case[1]][current_case[0]][-1]
             if current_block.getZIndex() != 0:
-                print(f"Collision {random.random()}")
                 return False
         return True
 
@@ -47,16 +46,17 @@ class Player:
 
         self.__dt = dt
         self.__dir = DIR_NONE
-        if keys[pygame.K_UP]:
+        # TODO: Fix diagonales going faster
+        if keys[pygame.K_UP] or keys[pygame.K_z]:
             target_pos[1] = self.__y - self.__speed * self.__dt
             self.__dir = DIR_UP
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             target_pos[1] = self.__y + self.__speed * self.__dt
             self.__dir = DIR_DOWN
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             target_pos[0] = self.__x + self.__speed * self.__dt
             self.__dir = DIR_RIGHT
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT] or keys[pygame.K_q]:
             target_pos[0] = self.__x - self.__speed * self.__dt
             self.__dir = DIR_LEFT
 
@@ -64,12 +64,14 @@ class Player:
             self.__x = target_pos[0]
             self.__y = target_pos[1]
 
+        MAP[int(self.__y + 96) // 50][int(self.__x + 64) // 50][0].rumble()
+
         self. __anmiframe += (dt * 4)
         self.__rect.x = 128 * (self.__dir + (int(self.__anmiframe) % (4 if self.__dir < DIR_LEFT else 2)))
 
     def render(self, screen) -> "Player":
         """ Render the player """
-        screen.blit(self.__sprite, (self.__x, self.__y), self.__rect)
+        screen.blit(self.__sprite, (self.__x, self.__y - 16), self.__rect)
         # The hitbox
-        pygame.draw.rect(screen, "#ff0000", (self.__x + 32, self.__y + 32, 128 / 2, 128 / 2), 1)
+        # pygame.draw.rect(screen, "#ff0000", (self.__x + 32, self.__y + 32, 128 / 2, 128 / 2), 1)
         return self

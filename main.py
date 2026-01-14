@@ -1,6 +1,6 @@
 ##
 ## HACKATON PROJECT, 2026
-## GAME_CA
+## CAVA
 ## File description:
 ## Game made for hackaton-ca
 ##
@@ -14,7 +14,7 @@ SCREEN_WIDTH  = 800
 SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("GAME CA")
+pygame.display.set_caption("CAVA - Hackaton CA")
 
 images: dict = {
     "player" : utils.load_and_resize("assets/ca_paille_spritesheet.png", 128 * 12, 128),
@@ -41,7 +41,7 @@ def global_render() -> None:
     player.render(screen)
 
 def game(debug: bool) -> None:
-    """ Main function for GAME_CA """
+    """ Main function for CAVA """
     is_running: bool = True
     dt = 0.0
     screen.fill("#323232")
@@ -58,5 +58,5 @@ def game(debug: bool) -> None:
         dt = clock.tick(FPS) / 1000.0
 
 if __name__ == "__main__":
-    print("Welcome to the demo of GAME_CA")
+    print("Welcome to the demo of CAVA")
     game(True)

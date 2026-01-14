@@ -1,6 +1,6 @@
 ##
 ## HACKATON PROJECT, 2026
-## GAME_CA
+## CAVA
 ## File description:
 ## Utils
 ##
