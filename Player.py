@@ -39,6 +39,10 @@ class Player:
             self.__coins -= ammount
             return ammount
         return 0
+    
+    def nCoins(self) -> int:
+        """ How many coins ? """
+        return self.__coins
 
     def getPosition(self) -> tuple[int, int]:
         """ Return the player position """

@@ -263,7 +263,7 @@ class Etf(Machine):
     def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Etf":
         """ Initialisation of class BlingMachine """
         super().__init__(x, y, sprite, z)
-        self.setName("livret a")
+        self.setName("etf")
         self.__deposit  : int   = 0
         self.__timer    : float = 0
         self.__max      : float = 1_000_000
@@ -275,7 +275,7 @@ class Etf(Machine):
         if self.__deposit == 0:
             self.__deposit = player.takeCoins(self.__max)
         else:
-            player.giveCoins(self.__deposit * (1 + self.__variation))
+            player.giveCoins(self.__deposit)
             self.__deposit = 0
         return self
 
@@ -302,6 +302,47 @@ class Etf(Machine):
              utils.write_text("%d"%self.__deposit, (x, y - (self.getZIndex() + self.getRumbling()) * self.getSize()[1] / 2), screen, utils.sFont, "#ffff00")
         return self
 
+class InteretetsComposes(Machine):
+    def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Etf":
+        """ Initialisation of class BlingMachine """
+        super().__init__(x, y, sprite, z)
+        self.setName("interets composes")
+        self.__deposit  : int   = 0
+        self.__timer    : float = 0
+        self.__max      : float = 100_000_000_000
+        self.__min      : float = 100_000
+        self.__taux     : float = 0.05
+
+    def interact(self, player) -> "Etf":
+        """ Interact with the bling machine """
+        if self.__deposit == 0 and player.nCoins() > self.__min:
+            self.__deposit = player.takeCoins(self.__max)
+        else:
+            player.giveCoins(self.__deposit)
+            self.__deposit = 0
+        return self
+
+    def help(self, blocks: list[list[list[Block]]]) -> None:
+        """ Fuck it """
+        super().help(blocks, ["CECI EST VOTRE PANIER D'ETF", "PLACEZ DE L'ARGENT ET RETIREZ LE QUAND LE PROFIT", "EST LE PLUS ELEVE !"])
+
+    def update(self, dt) -> "Etf":
+        """ Update the bling machine """
+        super().update(dt)
+        if self.isStart():
+            self.__timer += dt
+            if self.__timer > 10:
+                self.__timer = 0
+                self.__deposit += self.__deposit * self.__taux
+        return self
+
+    def render(self, screen) -> "Etf":
+        """ Render for bling machine """
+        super().render(screen)
+        if self.isStart():
+             x, y = self.getPosition()
+             utils.write_text("%d"%self.__deposit, (x, y - (self.getZIndex() + self.getRumbling()) * self.getSize()[1] / 2), screen, utils.sFont, "#ffff00")
+        return self
 
 if __name__ == "__main__":
     print("This module shouldn't be run as if, exiting.")

@@ -45,7 +45,7 @@ def handle_teapot(command: str, cmap: list, images: dict) -> None:
         case "BR":
             cmap[y][x].append(Block.Teapot(x, y, images["baril"], len(cmap[y][x])))
         case "IC":
-            cmap[y][x].append(Block.Machine(x, y, images["interetc"], len(cmap[y][x])))
+            cmap[y][x].append(Block.InteretetsComposes(x, y, images["interetc"], len(cmap[y][x])))
         case _:
             pass
 
