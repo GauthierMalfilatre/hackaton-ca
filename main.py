@@ -19,6 +19,7 @@ pygame.display.set_caption("CAVA - Hackaton CA")
 images: dict = {
     "player" : utils.load_and_resize("assets/ca_paille_spritesheet.png", 128 * 12, 128),
     "parquet": utils.load_and_resize("assets/parquet.png", 50, 75),
+    "brique": utils.load_and_resize("assets/brique.png", 50, 75),
 }
 
 MAP = mapParser.parse_map("map_demo.camp", images)
@@ -34,11 +35,13 @@ def handle_keys(keys: list, dt: float) -> None:
 
 def global_render() -> None:
     """ Render all. """
-    for line in MAP:
+    player_pos = player.getPosition()
+
+    for y, line in enumerate(MAP):
         for pile in line:
-            for block in pile:
-                block.render(screen)
-    player.render(screen)
+            [block.render(screen) for block in pile]
+            if (((player_pos[1] + 96) // 50) == y ):
+                player.render(screen)
 
 def game(debug: bool) -> None:
     """ Main function for CAVA """

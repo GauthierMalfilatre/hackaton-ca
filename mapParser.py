@@ -12,9 +12,9 @@ def handle_char(char: str, cmap: list[Block.Block], x: int, y: int, images: dict
     cmap.append([Block.Ground(x, y, images["parquet"]), ])
     match char:
         case "1":
-            cmap[-1].append(Block.Ground(x, y, images["parquet"], 1))
+            cmap[-1].append(Block.Ground(x, y, images["brique"], 1))
         case "2":
-            cmap[-1].append(Block.Ground(x, y, images["parquet"], 2))
+            cmap[-1].append(Block.Ground(x, y, images["brique"], 2))
         case _:
             pass
 

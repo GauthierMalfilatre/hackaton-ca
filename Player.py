@@ -27,6 +27,10 @@ class Player:
         self.__dir      : int   = DIR_NONE
         self.__anmiframe: float = 0
 
+    def getPosition(self) -> tuple[int, int]:
+        """ Return the player position """
+        return (self.__x, self.__y)
+
     def __handleCollision(self, MAP: list, target_pos: list[float, float]) -> "Player":
         """ Handle collision for player """
         
@@ -44,7 +48,7 @@ class Player:
         """ Move the player """
         target_pos: tuple[float, float] = [self.__x, self.__y]
 
-        self.__dt = dt
+        self.__dt  = dt
         self.__dir = DIR_NONE
         # TODO: Fix diagonales going faster
         if keys[pygame.K_UP] or keys[pygame.K_z]:
