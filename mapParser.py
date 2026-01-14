@@ -9,10 +9,12 @@ import Block
 def handle_char(char: str, cmap: list[Block.Block], x: int, y: int, images: dict) -> None:
     """ Handle char -> find the good Block """
     # A ground should be anywhere ig
-    cmap.append(Block.Ground(x, y, images["parquet"]))
+    cmap.append([Block.Ground(x, y, images["parquet"]), ])
     match char:
-        case "0":
-            cmap.append(Block.Ground(x, y, images["parquet"], 1))
+        case "1":
+            cmap[-1].append(Block.Ground(x, y, images["parquet"], 1))
+        case "2":
+            cmap[-1].append(Block.Ground(x, y, images["parquet"], 2))
         case _:
             pass
 

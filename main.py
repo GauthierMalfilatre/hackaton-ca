@@ -12,15 +12,17 @@ from Player import Player
 
 SCREEN_WIDTH  = 800
 SCREEN_HEIGHT = 600
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("GAME CA")
+
 images: dict = {
-    "player" : utils.load_and_resize("assets/ca_paille_spritesheet.png", 64 * 12, 64),
+    "player" : utils.load_and_resize("assets/ca_paille_spritesheet.png", 128 * 12, 128),
     "parquet": utils.load_and_resize("assets/parquet.png", 50, 75),
 }
 
-MAP           = mapParser.parse_map("map_demo.camp", images)
-FPS           = 60
+MAP = mapParser.parse_map("map_demo.camp", images)
+FPS = 60
 
 clock = pygame.time.Clock()
 
@@ -28,13 +30,14 @@ player: Player = Player(images["player"])
 
 def handle_keys(keys: list, dt: float) -> None:
     """ Handle key that are pressed """
-    player.move(keys, dt)
+    player.move(keys, dt, MAP)
 
 def global_render() -> None:
     """ Render all. """
     for line in MAP:
-        for block in line:
-            block.render(screen)
+        for pile in line:
+            for block in pile:
+                block.render(screen)
     player.render(screen)
 
 def game(debug: bool) -> None:
