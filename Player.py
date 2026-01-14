@@ -31,6 +31,15 @@ class Player:
         if ammount > 0:
             self.__coins += ammount
 
+    def takeCoins(self, ammount: int = 1) -> "Player":
+        """ Give the player n coins """
+        if ammount > 0:
+            if ammount > self.__coins:
+                ammount = self.__coins
+            self.__coins -= ammount
+            return ammount
+        return 0
+
     def getPosition(self) -> tuple[int, int]:
         """ Return the player position """
         return (self.__x, self.__y)
@@ -78,7 +87,7 @@ class Player:
             target_pos[0] = self.__x - self.__speed * self.__dt
             self.__dir = DIR_LEFT
 
-        if keys[pygame.K_e] and nm != None:
+        if utils.click(pygame.K_e) and nm != None:
             nm.interact(self)
 
         if keys[pygame.K_h] and nm != None:

@@ -5,6 +5,8 @@
 ## Block class'
 ##
 import utils
+import pygame
+import random
 
 class Block:
     def __init__(self, x: int, y: int, sprite, color: str = "#000000", z: int = 0) -> "Block":
@@ -97,10 +99,6 @@ class Ground(Block):
         super().__init__(x, y, sprite, "#6F4E37", z)
         self.setName("Ground level %d"%z)
 
-if __name__ == "__main__":
-    print("This module shouldn't be run as if, exiting.")
-    exit(84)
-
 class Teapot(Block):
     def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Teapot":
         """ Initialisation of class teapot """
@@ -145,10 +143,32 @@ class Machine(Block):
         """ Fuck victor jost """
         return self
 
-    def help(self, blocks: list[list[list[Block]]], lines: list[str]) -> "Machine":
-        """ Show help for machine based on given lines """                
-        for n, i in enumerate(lines):
-            utils.write_text(i, ((800 - len(i) * 50) // 2, 200 + n * 75), utils.screen, utils.bFont,"#ffffff")
+    def help(self, blocks: list[list[list[Block]]], lines: list[str] = []) -> "Machine":
+        """ Show help for machine based on given lines """
+        dt: float = 0
+        clock     = pygame.time.Clock()
+        utils.stop_all_machines(blocks)
+        while 1:
+            utils.screen.fill("#000000")
+            keys = pygame.key.get_pressed()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit(0)
+            if keys[pygame.K_RETURN] or keys[pygame.K_SPACE] or keys[pygame.K_ESCAPE]:
+                break
+            for line in blocks:
+                for pile in line:
+                    r = random.randint(-10, 0) / 10
+                    for block in pile:
+                        block.rumble(r)
+                        block.update(dt)
+                        block.render(utils.screen)
+            for n, i in enumerate(lines):                            
+                utils.write_text(i, ((800 - len(i) * 12.5) // 2, 100 + n * 50), utils.screen, utils.sFont,"#ffffff")
+            pygame.display.flip()
+            dt = clock.tick(60) / 1000
+        utils.start_all_machines(blocks)
 
     def render(self, screen) -> "Machine":
         super().render(screen)
@@ -174,7 +194,7 @@ class BlingMachine(Machine):
 
     def help(self, blocks: list[list[list[Block]]]) -> None:
         """ Fuck it """
-        super().help(blocks, ["LA CAISSE GENERE DE L'ARGENT A INTERVAL REGULIER", "BOMBOKLAT"])
+        super().help(blocks, ["CECI EST VOTRE CAISSE", "TOUTE LES SECONDES, ELLE GENERE 1 DOLLAR", "VOUS POUVEZ LES RECOLTER EN APPUYANT SUR [E]"])
 
     def update(self, dt) -> "BlingMachine":
         """ Update the bling machine """
@@ -190,3 +210,54 @@ class BlingMachine(Machine):
             x, y = self.getPosition()
             utils.write_text("%d"%self.__coins, (x, y - (self.getZIndex() + self.getRumbling()) * self.getSize()[1] / 2), screen, utils.sFont, "#ffff00")
         return self
+
+class LivretA(Machine):
+    def __init__(self, x: int, y: int, sprite, z: int = 0) -> "LivretA":
+        """ Initialisation of class BlingMachine """
+        super().__init__(x, y, sprite, z)
+        self.setName("livret a")
+        self.__deposit : int   = 0
+        self.__taux    : float = 0.03
+        self.__interest: float = 0
+        self.__timer   : float = 0
+        self.__max     : float = 22950
+        self.__player          = None
+
+    def interact(self, player) -> "LivretA":
+        """ Interact with the bling machine """
+        self.__player = player
+        if self.__deposit == 0:
+            self.__deposit = player.takeCoins(self.__max)
+        else:
+            player.giveCoins(self.__deposit + self.__interest)
+            self.__deposit = 0
+            self.__interest = 0
+        return self
+
+    def help(self, blocks: list[list[list[Block]]]) -> None:
+        """ Fuck it """
+        super().help(blocks, ["CECI EST VOTRE LIVRET A", "PLACEZ DE L'ARGENT DEDANS REGULIEREMENT", "POUR GENERER DES INTERETS", "LES INTERETS SONT AJOUTES TOUTES LES MINUTES", "A VOTRE COMPTE"])
+
+    def update(self, dt) -> "LivretA":
+        """ Update the bling machine """
+        super().update(dt)
+        if self.isStart():
+            self.__interest += self.__deposit * (self.__taux / 60 * dt)
+            self.__timer += dt
+            if self.__timer > 60:
+                self.__timer = 0
+                self.__player.giveCoins(self.__interest)
+                self.__interest = 0
+        return self
+
+    def render(self, screen) -> "LivretA":
+        """ Render for bling machine """
+        super().render(screen)
+        if self.isStart():
+             x, y = self.getPosition()
+             utils.write_text("%d"%(self.__deposit + self.__interest), (x, y - (self.getZIndex() + self.getRumbling()) * self.getSize()[1] / 2), screen, utils.sFont, "#ffff00")
+        return self
+
+if __name__ == "__main__":
+    print("This module shouldn't be run as if, exiting.")
+    exit(84)

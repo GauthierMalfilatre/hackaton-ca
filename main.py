@@ -18,12 +18,22 @@ SCREEN_WIDTH  = 800
 SCREEN_HEIGHT = 600
 
 images: dict = {
-    "player" : utils.load_and_resize("assets/ca_paille_spritesheet.png", 128 * 12, 128),
-    "parquet": utils.load_and_resize("assets/parquet.png", 50, 75),
-    "brique" : utils.load_and_resize("assets/brique.png", 50, 75),
-    "bs"     : utils.load_and_resize("assets/bst4.png", 50, 75),
-    "bling"  : utils.load_and_resize("assets/bling_machine.png", 50, 75),
-    "livreta": utils.load_and_resize("assets/livret_a.png", 50, 75),
+    "player"  : utils.load_and_resize("assets/ca_paille_spritesheet.png", 128 * 12, 128),
+    "parquet" : utils.load_and_resize("assets/parquet.png", 50, 75),
+    "brique"  : utils.load_and_resize("assets/brique.png", 50, 75),
+    "bs"      : utils.load_and_resize("assets/bst4.png", 50, 75),
+    "bling"   : utils.load_and_resize("assets/bling_machine.png", 50, 75),
+    "livreta" : utils.load_and_resize("assets/livret_a.png", 50, 75),
+    "tapis"   : utils.load_and_resize("assets/tapis_rouge.png", 50, 75),
+    "plante"  : utils.load_and_resize("assets/plante.png", 50, 75),
+    "chaise"  : utils.load_and_resize("assets/chaise.png", 50, 75),
+    "table"   : utils.load_and_resize("assets/table.png", 50, 75),
+    "tabouret": utils.load_and_resize("assets/tabouret.png", 50, 75),
+    "etf"     : utils.load_and_resize("assets/stonks.png", 50, 75),
+    "interetc": utils.load_and_resize("assets/interets_composes.png", 50, 75),
+    "coffre_fort": utils.load_and_resize("assets/coffre_fort.png", 50, 75),
+    "coffre": utils.load_and_resize("assets/money.png", 50, 75),
+    "baril": utils.load_and_resize("assets/baril.png", 50, 75),
 }
 
 musique = pygame.mixer.music.load("assets/banque_1.mp3")
@@ -87,29 +97,14 @@ def menu() -> None:
         pygame.display.flip()
         dt = clock.tick(FPS) / 1000.0
 
-def start_all_machines() -> None:
-    """ Start all the machines """
-    for line in MAP:
-        for pile in line:
-            for block in pile:
-                if isinstance(block, Block.Machine):
-                    block.start()
-
-def stop_all_machines() -> None:
-    """ Stop all the machines """
-    for line in MAP:
-        for pile in line:
-            for block in pile:
-                if isinstance(block, Block.Machine):
-                    block.stop()
-
 def game(debug: bool) -> None:
     """ Main function for CAVA """
     is_running: bool  = True
     dt        : float = 0.0
-    start_all_machines()
+    utils.start_all_machines(MAP)
     while is_running:
         keys = pygame.key.get_pressed()
+        utils.presses_update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -125,6 +120,6 @@ if __name__ == "__main__":
     is_running: bool = True
     pygame.mixer.music.play(-1)
     while is_running:
-        stop_all_machines()
+        utils.stop_all_machines(MAP)
         menu()
         game(True)
