@@ -15,15 +15,18 @@ class Block:
         self.__color   : tuple[int]      = color
         self.__z       : int             = z
         self.__sprite                    = sprite
-        self.__name    :str              = "Block"
+        self.__name    : str             = "Block"
+        self.__rumbling: float           = 0
+        self.__tRumbling: float           = 0
 
     def __str__(self) -> str:
         """ Get the name of the block """
         return self.__name
 
-    def rumble(self) -> "Block":
+    def rumble(self, intensity: float = -0.1, *, force: bool = False) -> "Block":
         """ Rumble the block """
-        self.__z -= 0.1
+        if self.__rumbling == 0 or force:
+            self.__tRumbling = intensity
         return self
 
     def setName(self, newname: str) -> "Block":
@@ -37,7 +40,7 @@ class Block:
     
     def getPosition(self) -> tuple[int, int]:
         """ Get the position of the Block """
-        return self.__position
+        return self.__position        
 
     def getZIndex(self) -> int:
         """ Return the z index of the Block """
@@ -57,14 +60,28 @@ class Block:
         self.__isDirty = True
         return self
 
+    def __handle_rumbling_regression(self, dt) -> "Block":
+        """ Handle the rumbling of the Block """
+        if self.__tRumbling < 0:
+            self.__rumbling -= 1 * dt
+            if self.__rumbling <= self.__tRumbling:
+                self.__tRumbling = 0
+        if self.__rumbling < 0 and self.__tRumbling == 0:
+            self.__rumbling += 1 * dt
+            if self.__rumbling > 0:
+                self.__rumbling = 0
+
+    def update(self, dt: float) -> "Block":
+        """ Update the block """
+        self.__handle_rumbling_regression(dt)
+
     def render(self, screen) -> "Block":
         """ Render method for class block """
         if (not self.__isDirty):
             pass
-        pygame.draw.rect(screen, self.__color, (self.__position[0], self.__position[1] + (self.__z * self.__size[1] / 2), *self.__size), 1)
-        screen.blit(self.__sprite, (self.__position[0], self.__position[1] - (self.__z * self.__size[1] / 2)))
+        # pygame.draw.rect(screen, self.__color, (self.__position[0], self.__position[1] + ((self.__z + self.__rumbling) * self.__size[1] / 2), *self.__size), 1)
+        screen.blit(self.__sprite, (self.__position[0], self.__position[1] - ((self.__z + self.__rumbling) * self.__size[1] / 2)))
         self.__isDirty = False
-        self.__z = int(self.__z)
 
 class Ground(Block):
     def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Ground":
@@ -75,3 +92,9 @@ class Ground(Block):
 if __name__ == "__main__":
     print("This module shouldn't be run as if, exiting.")
     exit(84)
+
+class Teapot(Block):
+    def __init__(self, x: int, y: int, sprite, z: int = 0) -> "Teapot":
+        """ Initialisation of class teapot """
+        super().__init__(x, y, sprite, "#000000", z + 0.5)
+        self.setName("Teapot goes brrrr")

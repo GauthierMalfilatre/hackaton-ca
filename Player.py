@@ -18,14 +18,15 @@ DIR_DOWN  = 10
 class Player:
     def __init__(self, sprite = None, x: int = 300, y: int = 300) -> bool:
         """ Initialisation of class Player """
-        self.__x        : float = y
-        self.__y        : float = x
+        self.__x        : float = x
+        self.__y        : float = y
         self.__sprite           = sprite
         self.__rect             = pygame.Rect(0, 0, 128, 1128)
         self.__dt       : float = 0
         self.__speed    : int   = 150
         self.__dir      : int   = DIR_NONE
         self.__anmiframe: float = 0
+        self.__coins    : float = 0
 
     def getPosition(self) -> tuple[int, int]:
         """ Return the player position """
@@ -40,7 +41,7 @@ class Player:
                   (target_pos[0] + 64, target_pos[1] + 96), (target_pos[0] + 96, target_pos[1] + 64)):
             current_case = (int((i[0]) // 50), int((i[1]) // 50))
             current_block = MAP[current_case[1]][current_case[0]][-1]
-            if current_block.getZIndex() != 0:
+            if current_block.getZIndex() != 0: # and not isinstance(current_block, Block.Teapot):
                 return False
         return True
 
@@ -68,7 +69,7 @@ class Player:
             self.__x = target_pos[0]
             self.__y = target_pos[1]
 
-        MAP[int(self.__y + 96) // 50][int(self.__x + 64) // 50][0].rumble()
+        MAP[int(self.__y + 96) // 50][int(self.__x + 64) // 50][0].rumble(force = True)
 
         self. __anmiframe += (dt * 4)
         self.__rect.x = 128 * (self.__dir + (int(self.__anmiframe) % (4 if self.__dir < DIR_LEFT else 2)))
