@@ -41,7 +41,7 @@ def handle_teapot(command: str, cmap: list, images: dict) -> None:
         case "CF":
             cmap[y][x].append(Block.Machine(x, y, images["coffre_fort"], len(cmap[y][x])))
         case "ETF":
-            cmap[y][x].append(Block.Machine(x, y, images["etf"], len(cmap[y][x])))
+            cmap[y][x].append(Block.Etf(x, y, images["etf"], len(cmap[y][x])))
         case "BR":
             cmap[y][x].append(Block.Teapot(x, y, images["baril"], len(cmap[y][x])))
         case "IC":

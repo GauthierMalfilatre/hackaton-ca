@@ -122,4 +122,5 @@ if __name__ == "__main__":
     while is_running:
         utils.stop_all_machines(MAP)
         menu()
+        player.giveCoins(10000)
         game(True)
