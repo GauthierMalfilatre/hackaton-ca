@@ -16,6 +16,7 @@ def handle_char(char: str, cmap: list[Block.Block], x: int, y: int, images: dict
         case "2":
             cmap[-1].append(Block.Ground(x, y, images["brique"], 1))
             cmap[-1].append(Block.Ground(x, y, images["brique"], 2))
+            cmap[-1].append(Block.Ground(x, y, images["brique"], 3))
         case _:
             pass
 
@@ -24,7 +25,11 @@ def handle_teapot(command: str, cmap: list, images: dict) -> None:
     x, y = int(command[1]), int(command[2])
     match command[0]:
         case "M":
-            cmap[y][x].append(Block.Teapot(x, y, images["bs"], len(cmap[y][x])))
+            cmap[y][x].append(Block.Teapot(x, y, images["coco"], len(cmap[y][x])))
+        case "BM":
+            cmap[y][x].append(Block.BlingMachine(x, y, images["bling"], len(cmap[y][x])))
+        case "LA":
+            cmap[y][x].append(Block.Machine(x, y, images["livreta"], len(cmap[y][x])))
         case _:
             pass
 
