@@ -12,7 +12,7 @@ pygame.init()
 bFont = pygame.font.SysFont('Arial', 50, bold=True)
 sFont = pygame.font.SysFont('Arial', 25, bold=True)
 
-screen = pygame.display.set_mode((800, 600), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("CAVA - Hackaton CA")
 
 keys = {key:[None, None] for key in (pygame.K_e, pygame.K_ESCAPE, pygame.K_h)}
@@ -53,7 +53,6 @@ def get_nearest_machine(blocks: list[list[list]], ref_pos: tuple[int, int]) -> t
 def get_squared_norm(x1: int, y1: int, x2: int, y2: int) -> float:
     """ Get the norm but not with sqrt """
     return ((x2 - x1) ** 2 + (y2 - y1) ** 2)
-
 
 def start_all_machines(blocks: list) -> None:
     """ Start all the machines """
