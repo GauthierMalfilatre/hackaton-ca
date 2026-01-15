@@ -118,6 +118,7 @@ def game(debug: bool) -> None:
 if __name__ == "__main__":
     print("Welcome to the demo of CAVA")
     is_running: bool = True
+    pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)
     while is_running:
         utils.stop_all_machines(MAP)

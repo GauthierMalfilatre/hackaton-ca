@@ -112,6 +112,13 @@ class Machine(Block):
         self.__start: bool = False
         self.__e    : bool = False
         self.__first: bool = False
+        self.__sound       = None
+
+    def setSound(self, sound) -> "Machine":
+        """ Set the sound of the machine """
+        self.__sound = sound
+        self.__sound.set_volume(1.0)
+        return self
 
     def start(self) -> "Machine":
         """ Start the machine """
@@ -139,8 +146,10 @@ class Machine(Block):
         """ Return is E """
         return self.__e
 
-    def interact(self, player) -> "Machine":
+    def interact(self) -> "Machine":
         """ Fuck victor jost """
+        if self.__sound != None:
+            self.__sound.play()
         return self
 
     def help(self, blocks: list[list[list[Block]]], lines: list[str] = []) -> "Machine":
@@ -182,11 +191,13 @@ class BlingMachine(Machine):
         """ Initialisation of class BlingMachine """
         super().__init__(x, y, sprite, z)
         self.setName("bling machine")
+        self.setSound(pygame.mixer.Sound("assets/bling.mp3"))
         self.__coins: int   = 0
         self.__cps  : float = 2
 
     def interact(self, player) -> int:
         """ Interact with the bling machine """
+        super().interact()
         player.giveCoins(self.__coins)
         old_coins = self.__coins
         self.__coins = 0
@@ -221,12 +232,14 @@ class LivretA(Machine):
         self.__interest: float = 0
         self.__timer   : float = 0
         self.__max     : float = 22950
+        self.__min     : float = 20
         self.__player          = None
 
     def interact(self, player) -> "LivretA":
         """ Interact with the bling machine """
+        super().interact()
         self.__player = player
-        if self.__deposit == 0:
+        if self.__deposit == 0 and player.nCoins() >= self.__min:
             self.__deposit = player.takeCoins(self.__max)
         else:
             player.giveCoins(self.__deposit + self.__interest)
@@ -267,12 +280,14 @@ class Etf(Machine):
         self.__deposit  : int   = 0
         self.__timer    : float = 0
         self.__max      : float = 1_000_000
+        self.__min      : float = 10_000
         self.__variation: float = 0
         self.__volatile         = 0.05
 
     def interact(self, player) -> "Etf":
         """ Interact with the bling machine """
-        if self.__deposit == 0:
+        super().interact()
+        if self.__deposit == 0 and player.nCOins() >= self.__min:
             self.__deposit = player.takeCoins(self.__max)
         else:
             player.giveCoins(self.__deposit)
@@ -315,7 +330,8 @@ class InteretetsComposes(Machine):
 
     def interact(self, player) -> "Etf":
         """ Interact with the bling machine """
-        if self.__deposit == 0 and player.nCoins() > self.__min:
+        super().interact()
+        if self.__deposit == 0 and player.nCoins() >= self.__min:
             self.__deposit = player.takeCoins(self.__max)
         else:
             player.giveCoins(self.__deposit)
@@ -324,7 +340,7 @@ class InteretetsComposes(Machine):
 
     def help(self, blocks: list[list[list[Block]]]) -> None:
         """ Fuck it """
-        super().help(blocks, ["CECI EST VOTRE PANIER D'ETF", "PLACEZ DE L'ARGENT ET RETIREZ LE QUAND LE PROFIT", "EST LE PLUS ELEVE !"])
+        super().help(blocks, ["CA, C'EST LES INTERETS COMPOSES", "IL FONCTIONNE EN GENERANT DES INTERET SUR VOTRE", "SOMME DEPOSE PLUS LES INTERETS PRECEDENTS", "", "C'EST UN CONCEPT TRES PUISSANT DE LA FINANCE!"])
 
     def update(self, dt) -> "Etf":
         """ Update the bling machine """
