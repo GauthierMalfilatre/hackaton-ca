@@ -146,7 +146,15 @@ class Machine(Block):
         """ Return is E """
         return self.__e
 
-    def interact(self) -> "Machine":
+    def depositAll(self, player) -> "Machine":
+        """ Deposit all player money """
+        return self
+
+    def takeAll(self, player) -> "Machine":
+        """ Deposit all player money """
+        return self
+
+    def interact(self, player = None) -> "Machine":
         """ Fuck victor jost """
         if self.__sound != None:
             self.__sound.play()
@@ -193,7 +201,7 @@ class BlingMachine(Machine):
         self.setName("bling machine")
         self.setSound(pygame.mixer.Sound("assets/bling.mp3"))
         self.__coins: int   = 0
-        self.__cps  : float = 2
+        self.__cps  : float = 1
 
     def interact(self, player) -> int:
         """ Interact with the bling machine """
@@ -213,6 +221,11 @@ class BlingMachine(Machine):
         if self.isStart():
             self.__coins += self.__cps * dt
         return self
+
+    def howMuch(self) -> int:
+        """ Return how many coins """
+        # Les interets sont epargnés on va dire
+        return self.__coins
 
     def render(self, screen) -> "BlingMachine":
         """ Render for bling machine """
@@ -234,6 +247,19 @@ class LivretA(Machine):
         self.__max     : float = 22950
         self.__min     : float = 20
         self.__player          = None
+
+    def depositAll(self, player) -> "LivretA":
+        """ Deposit all player money """
+        self.__deposit += player.takeCoins(self.__max - self.__deposit)
+        return self
+
+    def takeAll(self, player) -> "LivretA":
+        """ Deposit all player money """
+        player.giveCoins(self.__deposit + self.__interest)
+        self.__deposit = 0
+        self.__interest = 0
+        return self
+
 
     def interact(self, player) -> "LivretA":
         """ Interact with the bling machine """
@@ -264,6 +290,11 @@ class LivretA(Machine):
                 self.__interest = 0
         return self
 
+    def howMuch(self) -> int:
+        """ Return how many coins """
+        # Les interets sont epargnés on va dire
+        return self.__deposit
+
     def render(self, screen) -> "LivretA":
         """ Render for bling machine """
         super().render(screen)
@@ -284,10 +315,21 @@ class Etf(Machine):
         self.__variation: float = 0
         self.__volatile         = 0.05
 
+    def depositAll(self, player) -> "Etf":
+        """ Deposit all player money """
+        self.__deposit += player.takeCoins(self.__max - self.__deposit)
+        return self
+
+    def takeAll(self, player) -> "Etf":
+        """ Deposit all player money """
+        player.giveCoins(self.__deposit)
+        self.__deposit = 0
+        return self
+
     def interact(self, player) -> "Etf":
         """ Interact with the bling machine """
         super().interact()
-        if self.__deposit == 0 and player.nCOins() >= self.__min:
+        if self.__deposit == 0 and player.nCoins() >= self.__min:
             self.__deposit = player.takeCoins(self.__max)
         else:
             player.giveCoins(self.__deposit)
@@ -309,6 +351,10 @@ class Etf(Machine):
                 self.__deposit *= (1 + self.__variation)
         return self
 
+    def howMuch(self) -> int:
+        """ Return how many coins """
+        return self.__deposit
+
     def render(self, screen) -> "Etf":
         """ Render for bling machine """
         super().render(screen)
@@ -327,6 +373,17 @@ class InteretetsComposes(Machine):
         self.__max      : float = 100_000_000_000
         self.__min      : float = 100_000
         self.__taux     : float = 0.05
+
+    def depositAll(self, player) -> "InteretetsComposes":
+        """ Deposit all player money """
+        self.__deposit += player.takeCoins(self.__max - self.__deposit)
+        return self
+
+    def takeAll(self, player) -> "InteretetsComposes":
+        """ Deposit all player money """
+        player.giveCoins(self.__deposit)
+        self.__deposit = 0
+        return self
 
     def interact(self, player) -> "Etf":
         """ Interact with the bling machine """
@@ -352,12 +409,74 @@ class InteretetsComposes(Machine):
                 self.__deposit += self.__deposit * self.__taux
         return self
 
+    def howMuch(self) -> int:
+        """ Return how many coins """
+        return self.__deposit
+
     def render(self, screen) -> "Etf":
         """ Render for bling machine """
         super().render(screen)
         if self.isStart():
              x, y = self.getPosition()
              utils.write_text("%d"%self.__deposit, (x, y - (self.getZIndex() + self.getRumbling()) * self.getSize()[1] / 2), screen, utils.sFont, "#ffff00")
+        return self
+
+
+class Macron(Machine):
+    def __init__(self, x: int, y: int, sprite, z: int = 0, blocks: list = []) -> "Etf":
+        """ Initialisation of class BlingMachine """
+        super().__init__(x, y, sprite, z)
+        self.setName("impots")
+        self.__total   : int = 0
+        self.__oldCoins: int = 0
+        self.__coins   : int = 0
+        self.__objectif: int = 3
+        self.__player        = None
+        self.__blocks        = blocks
+        self.__timer         = 0
+        self.__time          = 60 * 3
+
+    def interact(self, player) -> "Etf":
+        """ Interact with the bling machine """
+        super().interact()
+        self.__player = player
+        self.__coins += player.takeCoins(self.__objectif - self.__coins)
+        return self
+
+    def help(self, blocks: list[list[list[Block]]]) -> None:
+        """ Fuck it """
+        super().help(blocks, ["VOICI LES IMPOTS", "EN FONCTION DE TON REVENU DU MOIS DERNIER, TU DOIS LUI DONNER","UNE CERTAINE SOMME TOUTES LES 3 MINUTES SOUS PEINES DE GAME OVER."])
+
+    def update(self, dt) -> "Etf":
+        """ Update the bling machine """
+        super().update(dt)
+        if self.isStart():
+            if self.__blocks == None or self.__player == None:
+                return self
+            self.__timer += dt
+            if self.__timer > self.__time:
+                if self.__coins < self.__objectif:
+                    self.__player.kill()
+                    return self
+                self.__total += self.__coins
+                total_player = self.__player.nCoins()
+                for line in self.__blocks:
+                    for pile in line:
+                        for b in pile:
+                            if isinstance(b, Machine) and not isinstance(b, Macron):
+                                total_player += b.howMuch()
+                self.__objectif = 0.3 * (total_player)
+                self.__coins = 0
+                self.__timer = 0
+                # self.__oldCoins = self.__oldCoins - self.__coins
+        return self
+
+    def render(self, screen) -> "Etf":
+        """ Render for bling machine """
+        super().render(screen)
+        if self.isStart():
+             x, y = self.getPosition()
+             utils.write_text("%02d:%02d (%d/%d)"%((self.__time - int(self.__timer)) / 60, (self.__time - int(self.__timer)) % 60, self.__coins, self.__objectif), (x, y - (self.getZIndex() + self.getRumbling()) * self.getSize()[1] / 2), screen, utils.sFont, "#ffff00")
         return self
 
 if __name__ == "__main__":

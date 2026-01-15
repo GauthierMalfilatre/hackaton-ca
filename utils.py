@@ -12,7 +12,7 @@ pygame.init()
 bFont = pygame.font.SysFont('Arial', 50, bold=True)
 sFont = pygame.font.SysFont('Arial', 25, bold=True)
 
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((800, 600), pygame.FULLSCREEN)
 pygame.display.set_caption("CAVA - Hackaton CA")
 
 keys = {key:[None, None] for key in (pygame.K_e, pygame.K_ESCAPE, pygame.K_h)}

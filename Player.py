@@ -25,6 +25,7 @@ class Player:
         self.__dir      : int   = DIR_NONE
         self.__anmiframe: float = 0
         self.__coins    : float = 0
+        self.__isAlive  : bool  = True
 
     def giveCoins(self, ammount: int = 1) -> "Player":
         """ Give the player n coins """
@@ -47,6 +48,20 @@ class Player:
     def getPosition(self) -> tuple[int, int]:
         """ Return the player position """
         return (self.__x, self.__y)
+
+    def kill(self) -> "Player":
+        """ Kill the player """
+        self.__isAlive = False
+        return self
+
+    def revive(self) -> "Player":
+        """ Revive the player """
+        self.__isAlive = True
+        return self
+
+    def isAlive(self) -> bool:
+        """ Return if the player is alive """
+        return self.__isAlive
 
     def getOrigin(self) -> tuple[int, int]:
         """ return the player center """
@@ -96,6 +111,12 @@ class Player:
 
         if keys[pygame.K_h] and nm != None:
             nm.help(MAP)
+
+        if keys[pygame.K_r] and nm != None:
+            nm.takeAll(self)
+
+        if keys[pygame.K_t] and nm != None:
+            nm.depositAll(self)
 
         if self.__handleCollision(MAP, target_pos) and target_pos != [None, None]:
             self.__x = target_pos[0]

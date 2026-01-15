@@ -109,7 +109,7 @@ def game(debug: bool) -> None:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit(0)
-        is_running = handle_keys(keys, dt)
+        is_running = (handle_keys(keys, dt) and player.isAlive())
         global_update(dt)
         global_render()
         pygame.display.flip()
@@ -123,5 +123,5 @@ if __name__ == "__main__":
     while is_running:
         utils.stop_all_machines(MAP)
         menu()
-        player.giveCoins(100000)
         game(True)
+        player.takeCoins(player.nCoins())

@@ -19,4 +19,6 @@ AT TA  6  6
 AT TB  7  6
 AT PL  15 2
 AT CF  14 2
-AT IC  4 2
+AT IC  4  2
+AT CO  1  8
+AT BR  1  9
