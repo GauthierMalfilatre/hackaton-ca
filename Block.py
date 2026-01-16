@@ -371,7 +371,7 @@ class InteretetsComposes(Machine):
         self.__deposit  : int   = 0
         self.__timer    : float = 0
         self.__max      : float = 100_000_000_000
-        self.__min      : float = 100_000
+        self.__min      : float = 10  # 0_000
         self.__taux     : float = 0.05
 
     def depositAll(self, player) -> "InteretetsComposes":
