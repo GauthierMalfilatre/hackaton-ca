@@ -311,7 +311,7 @@ class Etf(Machine):
         self.__deposit  : int   = 0
         self.__timer    : float = 0
         self.__max      : float = 1_000_000
-        self.__min      : float = 10_000
+        self.__min      : float = 500
         self.__variation: float = 0
         self.__volatile         = 0.05
 
